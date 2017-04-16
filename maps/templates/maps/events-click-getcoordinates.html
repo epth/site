@@ -1,0 +1,252 @@
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.12/proj4.js"></script>
+<script src="https://code.highcharts.com/maps/highmaps.js"></script>
+<script src="https://code.highcharts.com/maps/modules/data.js"></script>
+<script src="https://code.highcharts.com/mapdata/custom/world.js"></script>
+<script src="https://code.highcharts.com/mapdata/index.js"></script>
+<script src="https://rawgithub.com/highcharts/draggable-points/master/draggable-points.js"></script>
+
+<div id="outer">
+    <div id="outer-container">
+        <div id="container"></div>
+        <div id="code-container">
+            <button id="close">Back to map</button>
+            <div id="code-inner"></div>
+        </div>
+    </div>
+
+    <form>
+        <div class="form">
+
+            <p>
+                <label>Load another map</label>
+                <select id="maps"></select>
+            </p>
+
+            <p>
+                Clicking adds points to
+                <input type="radio" name="series" value="points" id="points" checked="checked" />
+                <label for="points">Points</label>
+                <input type="radio" name="series" value="connected-points" id="connected-points" />
+                <label for="connected-points">Connected points</label>
+            </p>
+
+            <p>
+                <input type="checkbox" name="delete" id="delete" />
+                <label for="delete">Delete points by click</label>
+            </p>
+            <p>
+                <button id="getconfig">Get series configuration</button>
+            </p>
+        </div>
+    </form>
+</div>
+
+<script>
+    function showMap(mapKey) {
+
+    //var supportsLatLon = !!Highcharts.maps[mapKey]['hc-transform'];
+    var supportsLatLon = false;
+
+    // Initiate the chart
+    Highcharts.mapChart('container', {
+
+        chart: {
+            events: {
+                click: function (e) {
+                    var series = this.get($('input[name=series]:checked').val()),
+                        x = Math.round(e.xAxis[0].value),
+                        y = Math.round(e.yAxis[0].value);
+
+                    series.addPoint(supportsLatLon ? this.fromPointToLatLon({
+                        x: x,
+                        y: y
+                    }) : {
+                        x: x,
+                        y: y
+                    });
+                }
+            },
+            animation: false
+        },
+
+        title: {
+            text: 'Draw your own points or lines'
+        },
+
+        subtitle: supportsLatLon ? {} : {
+            text: 'This map does not support latitude/longitude - x/y coordinates will be used',
+            style: {
+                color: 'red'
+            }
+        },
+
+        mapNavigation: {
+            enabled: true,
+            buttonOptions: {
+                verticalAlign: 'bottom'
+            }
+        },
+
+        legend: {
+            enabled: false
+        },
+
+        tooltip: {
+            pointFormatter: function () {
+                return supportsLatLon ? 'Lat: ' + this.lat.toFixed(3) + ', Lon: ' + this.lon.toFixed(3) : 'x: ' + this.x + ', y: ' + this.y;
+            }
+        },
+
+        plotOptions: {
+            series: {
+                point: {
+                    events: {
+                        // Update lat/lon properties after dragging point
+                        drop: function () {
+                            var newLatLon;
+                            if (supportsLatLon) {
+                                newLatLon = this.series.chart.fromPointToLatLon(this);
+                                this.lat = newLatLon.lat;
+                                this.lon = newLatLon.lon;
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        series: [/*{
+            mapData: Highcharts.maps[mapKey]
+        },*/
+        {
+					"type": "map",
+					"data": [
+						{
+							"name": "path4220",
+							"path": "M13,-513,43,-565L33,-601,39,-706,72,-738,100,-692,119,-743,110,-780,156,-832,196,-884,254,-868,291,-852,291,-828,318,-615,323,-403,230,-226,186,-217,147,-318,139,-413,44,-417,0,-472z"
+						},
+						{
+							"name": "path4222",
+							"path": "M292,-851,394,-978,614,-999,959,-859,1000,-798,866,-754,839,-673,750,-566,676,-488,790,-335,832,-224,797,-188,744,-217,677,-228,664,-211,643,-252,646,-288,683,-305,700,-335,653,-357C653,-357,633,-356,622,-359,612,-363,557,-406,557,-406L556,-440,554,-487,515,-499,459,-470,469,-417,400,-457,428,-508,378,-521,335,-461,320,-466"
+						}
+					]
+				},
+         {
+            type: 'mappoint',
+            id: 'points',
+            name: 'Points',
+            draggableX: true,
+            draggableY: true,
+            cursor: 'move',
+            point: {
+                events: {
+                    click: function () {
+                        if ($('input#delete').attr('checked')) {
+                            this.remove();
+                        }
+                    }
+                }
+            }
+        }, {
+            type: 'mappoint',
+            id: 'connected-points',
+            name: 'Connected points',
+            draggableX: true,
+            draggableY: true,
+            cursor: 'move',
+            color: Highcharts.getOptions().colors[0],
+            lineWidth: 2,
+            point: {
+                events: {
+                    click: function () {
+                        if ($('input#delete').attr('checked')) {
+                            this.remove();
+                        }
+                    }
+                }
+            }
+        }]
+    });
+}
+
+
+
+
+
+var $select,
+    $option,
+    group,
+    name;
+
+showMap('custom/world');
+
+$('#getconfig').click(function () {
+    var chart = Highcharts.charts[0],
+        points,
+        html = '';
+
+    function getPointConfigString(point) {
+        return point.lat ? '{ lat: ' + point.lat + ', lon: ' + point.lon + ' }' :
+            '{ x: ' + point.x + ', y: ' + point.y + ' }';
+    }
+
+    if (chart.get('points').data.length) {
+        points = '{\n    type: "mappoint",\n    data: [\n        ' +
+            $.map(chart.get('points').data, getPointConfigString).join(",\n        ") +
+            '\n    ]\n}';
+        html += '<h3>Points configuration</h3><pre>' + points + '</pre>';
+    }
+
+    if (chart.get('connected-points').data.length) {
+        points = '{\n    type: "mappoint",\n    lineWidth: 2,\n    data: [\n        ' +
+            $.map(chart.get('connected-points').data, getPointConfigString).join(",\n        ") +
+            '\n    ]\n}';
+        html += '<h3>Connected points configuration</h3><pre>' + points + '</pre>';
+    }
+
+    if (!html) {
+        html = 'No points added. Click the map to add points.';
+    }
+
+    $('#code-inner').html(html);
+    $('#container').css({
+        'margin-top': -400
+    });
+
+
+    return false;
+});
+
+$('#close').click(function () {
+    $('#container').css({
+        'margin-top': 0
+    });
+});
+
+$select = $('select#maps');
+for (group in Highcharts.mapDataIndex) {
+    if (Highcharts.mapDataIndex.hasOwnProperty(group)) {
+        if (group !== 'version') {
+            for (name in Highcharts.mapDataIndex[group]) {
+                if (Highcharts.mapDataIndex[group].hasOwnProperty(name)) {
+                    $option = $('<option value="' + Highcharts.mapDataIndex[group][name] + '">' + name + '</option>');
+                    if (name === 'World') {
+                        $option.attr('selected', true);
+                    }
+                    $select.append($option);
+                }
+            }
+        }
+    }
+}
+$select.change(function () {
+    alert('adsf');
+    var mapKey = $select.val().replace(/\.js$/, '');
+    $.getScript('https://code.highcharts.com/mapdata/' + mapKey + '.js', function () {
+        showMap(mapKey);
+    });
+});
+
+
+</script>

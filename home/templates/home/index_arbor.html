@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+  <meta charset="utf-8">
+  <title>arbor.js » atlas</title>
+</head>
+
+<body>
+  <div id="maps"><a href="/">back</a>
+    <ul></ul>
+  </div>
+  <canvas id="viewport" width="800" height="600"></canvas>
+
+  <div id="dataset">Derived from Wikipedia’s <a href="http://en.wikipedia.org/wiki/List_of_countries_and_territories_by_land_bord">sdfsfsd</a></div>
+
+  <!-- jQuery -->
+  {% load static %}
+  <script src="{% static 'js/jquery.min.js' %}"></script>
+  <script src="{% static 'js/arbor.js' %}"></script>
+  <!--script src="{% static 'js/atlas.js' %}"></script-->
+  <script>
+    (function($){
+
+    //Initialize system 
+    var sys = arbor.ParticleSystem(1000, 400, 1);
+    //Set animals 
+    sys.parameters({ "repulsion": 50, "friction": 0.5, "stiffness": 512, "gravity": true });
+    //Initialize a render 
+    sys.renderer = Renderer("#viewport");
+    //Add some node 
+var RootNode = sys.addNode('Root', <?php echo json_encode ( array ( 'color' => 'gray' , 'shape' => 'dot' , 'label' => 'Root Node' ) ) ; ?> );
+var subNodeA = sys.addNode('SubNodeA', <?php echo json_encode ( array ( 'color' => '#BA55D3' , 'shape' => 'dot' , 'label' => 'Sub Node A' ) ) ; ?> );
+var subNodeB = sys.addNode('SubNodeB', <?php echo json_encode ( array ( 'color' => '#8B4513' , 'shape' => 'dot' , 'label' => 'Sub Node B' ) ) ; ?> );
+    })
+  </script>
+</body>
+
+</html>
