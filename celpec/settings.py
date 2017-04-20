@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     'celpec',
     'home',
     'maps',
+    'public',
+    'knowledge',
+    'apps',
 ]
 
 MIDDLEWARE = [
@@ -112,13 +115,14 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'zh-hans'
 
-TIME_ZONE = 'UTC'
+#TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)

@@ -1473,11 +1473,11 @@ form label {
 
 #gtco-features-3 {
   position: relative;
-  top: -7em;
+  top: 3em;
 }
 @media screen and (max-width: 768px) {
   #gtco-features-3 {
-    top: -2em;
+    /*top: -2em;*/
   }
 }
 #gtco-features-3 .feature {
@@ -2055,5 +2055,10 @@ form label {
   background: none;
   border: 2px solid #17B794;
 }
-
+/*.sugar {
+  background-position: center center;
+  width: 100%;
+  float: left;
+  position: relative;
+}*/
 /*# sourceMappingURL=style.css.map */
