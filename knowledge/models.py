@@ -3,14 +3,18 @@ from __future__ import unicode_literals
 
 from django.db import models
 
+from ckeditor.fields import RichTextField
+
+from users.models import USER
+
 # Create your models here.
 
-class USER(models.Model):
-    name=models.CharField(max_length=50)
-    telephone=models.CharField(max_length=50)
-    cellphone=models.CharField(max_length=50)
-    def __str__(self):
-        return self.name
+#class USER(models.Model):
+#    name=models.CharField(max_length=50)
+#    telephone=models.CharField(max_length=50)
+#    cellphone=models.CharField(max_length=50)
+#    def __str__(self):
+#        return self.name
 
 
 class GRADE(models.Model):
@@ -24,11 +28,11 @@ class GRADE(models.Model):
 
 
 class KNOWLEDGE(models.Model):
-    grade_id = models.ForeignKey(GRADE, on_delete=models.CASCADE)
-    user_id = models.ForeignKey(USER, on_delete=models.CASCADE)
+    grade = models.ForeignKey(GRADE, on_delete=models.CASCADE)
+    user = models.ForeignKey(USER, on_delete=models.CASCADE)
     title=models.CharField(max_length=16)
-    instrument = models.CharField(max_length=100)
-    create_time=models.DateTimeField()
-    lastedit_time=models.DateTimeField()
+    content=RichTextField()
+    create_time=models.DateTimeField(auto_now_add=True)
+    lastedit_time=models.DateTimeField(auto_now=True)
     def __str__(self):
        return self.title

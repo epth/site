@@ -1,20 +1,74 @@
 {% extends 'public/base.html' %} {% block highcharts.css %} {% load static %}
 <!-- Highcharts  -->
-<link rel="stylesheet" href="{% static 'css/highcharts.css' %}"> {% endblock %} {% block content %}
+<!--link rel="stylesheet" href="{% static 'css/highcharts.css' %}"-->{% endblock %} {% block content %}
 <div id="container"></div>
 <div id="container2"></div>
-{% endblock %} {% block highmaps.js %}
+
+<button id="ani">动画</button> {% endblock %} {% block highmaps.js %}
 <!-- Highmaps -->
 <!--script src="http://code.highcharts.com/maps/highmaps.js"></script-->
 <script src="{% static 'js/highmaps.js' %}"></script>
+<!--script src="https://cdn.hcharts.cn/highmaps/highmaps.js"-->
+</script>
 {% endblock %} {% block script %}
 <script>
     $(function () {
-
+        $('#ani').click(function () {
+            abc.series[2].data[2].update({
+                "color": "#FF0FF0"
+            });
+        });
+        setInterval(function () {
+                        }, 1000);
         // Initiate the chart
-        $('#container').highcharts('Map', {
+        //var abc=$('#container').highcharts('Map', {
+        var abc = Highcharts.mapChart('container', {
+
+            chart: {
+                events: {
+                    load: function () {
+                        var a = 1;
+                        var i = 0;
+                        var series2 = this.series[2];
+                        var jsonArray = [
+                            { "user": { "id": 100, "screen_name": "d_linq" }, "text": "to objects" },
+                            { "user": { "id": 130, "screen_name": "c_bill" }, "text": "g" },
+                            { "user": { "id": 155, "screen_name": "b_mskk" }, "text": "kabushiki kaisha" },
+                            { "user": { "id": 301, "screen_name": "a_xbox" }, "text": "halo reach" }
+                        ]
+                        // ["b_mskk:kabushiki kaisha", "c_bill:g", "d_linq:to objects"]
+                        var queryResult = Enumerable.From(series2.data)
+                            .Where(function (x) { return x.name == "Namur" })
+                            //.OrderBy(function (x) { return x.user.screen_name })
+                            .Select(function (x) { return x.tag })
+                            .ToString();
+                        // shortcut! string lambda selector
+                        setInterval(function () {
+                            series2.data[queryResult].update(i++ % 2 ? {
+                                "color": "#FF0FF0",
+                                "status":"Un Idle",
+                            }
+                                : {
+                                    "color": "#000FF0",
+                                    "status":"Un Idle",
+                                });
+                        }, 1000);
+                    }
+                }
+
+            },
             title: {
                 text: 'NTLY  106工房'
+            },
+            tooltip: {
+                backgroundColor: 'none',
+                borderWidth: 0,
+                shadow: false,
+                useHTML: true,
+                padding: 0,
+                positioner: function () {
+                    return { x: 220, y: 220 };
+                }
             },
             credits: {
                 text: 'CELPEC.COM',
@@ -24,6 +78,7 @@
                     x: -100
                 }
             },
+
             colorAxis: {
                 minColor: '#efecf3',
                 maxColor: '#990041',
@@ -31,36 +86,11 @@
                 endOnTick: false,
                 type: 'logarithmic'
             },
-            tooltip: /*{
-				pointFormatter: function () {
-					//return 'x: ' + this.x + ', y: ' + this.y;
-					//alert('<img src="{% static "images/img_1.jpg" %}">');
-					return '<img src="{% static "images/img_1.jpg" %}">'
-				}
-			},*/
-            {
-                backgroundColor: '#FCFFC5',   // 背景颜色
-                borderColor: 'black',         // 边框颜色
-                borderRadius: 10,             // 边框圆角
-                borderWidth: 3,               // 边框宽度
-                shadow: true,                 // 是否显示阴影
-                animation: true,               // 是否启用动画效果
-                style: {                      // 文字内容相关样式
-                    color: "#ff0000",
-                    fontSize: "12px",
-                    fontWeight: "blod",
-                    fontFamily: "Courir new"
-                },
-                shared: true,
-                useHTML: true,
-                headerFormat: '<small>{point.key}</small><table>',
-                pointFormat: '<img src="{% static "images/img_1.jpg" %}" width="200">',
-                footerFormat: '</table>',
-                valueDecimals: 2
-            },
+           
             series: [
                 {
                     "type": "map",
+                    "name": "firstname",
                     "data": [
                         {
                             "name": "path4220",
@@ -70,7 +100,24 @@
                             "name": "path4222",
                             "path": "M292,-851,394,-978,614,-999,959,-859,1000,-798,866,-754,839,-673,750,-566,676,-488,790,-335,832,-224,797,-188,744,-217,677,-228,664,-211,643,-252,646,-288,683,-305,700,-335,653,-357C653,-357,633,-356,622,-359,612,-363,557,-406,557,-406L556,-440,554,-487,515,-499,459,-470,469,-417,400,-457,428,-508,378,-521,335,-461,320,-466"
                         }
-                    ]
+                    ],
+                    states: {
+                        hover: {
+                            color: '#a4edba'
+                        }
+                    },
+                    tooltip: {
+                backgroundColor: 'none',
+                borderWidth: 0,
+                shadow: false,
+                useHTML: true,
+                padding: 0,
+                pointFormat: '<span class="f32"><span class="flag {point.flag}"></span></span>'
+                + ' {point.name}: <b>{point.value}</b>/km²',
+                positioner: function () {
+                    return { x: 0, y: 250 };
+                }
+            },
                 },
                 {
                     "type": "mapline",
@@ -89,120 +136,108 @@
                     "type": "mappoint",
                     "name": "Cities",
                     "marker": {
-                        "fillColor": "white",
-                        "lineColor": "black",
+                        //"fillColor": "white",
+                        //"lineColor": "black",
                         "lineWidth": 2,
                         "radius": 3
                     },
+                    tooltip: /*{
+				pointFormatter: function () {
+					//return 'x: ' + this.x + ', y: ' + this.y;
+					//alert('<img src="{% static "images/img_1.jpg" %}">');
+					return '<img src="{% static "images/img_1.jpg" %}">'
+				}
+			},*/
+            {
+                //backgroundColor: '#FCFFC5',   // 背景颜色
+                borderColor: 'black',         // 边框颜色
+                borderRadius: 10,             // 边框圆角
+                borderWidth: 1,               // 边框宽度
+                shadow: true,                 // 是否显示阴影
+                animation: true,               // 是否启用动画效果
+                style: {                      // 文字内容相关样式
+                    //color: "#ff0000",
+                    fontSize: "12px",
+                    fontWeight: "blod",
+                    fontFamily: "Courir new"
+                },
+                shared: true,
+                useHTML: true,
+                headerFormat: '<small>{point.key}</small><br><table>',
+                //pointFormat: '<img src="{% static "images/img_1.jpg" %}" width="200"><tr><td style="color: {series.color}">{series.name}: </td>' +
+                //'<td style="text-align: right"><b>{point.y} EUR</b></td></tr>',
+                pointFormat: '<tr><td>状态：</td>' +
+                '<td style="text-align: right"><b>{point.status}</b></td></tr>',
+                footerFormat: '</table>',
+                valueDecimals: 2
+            },
                     "data": [{
                         "name": "Liège",
+                        "status": "Idle",
+                        "tag": 0,
                         "x": 51,
                         "y": -556
+                        
                     }, {
                         "name": "Brussels",
+                        "status": "Idle",
+                        "tag": 1,
                         "x": 573,
-                        "y": -556
+                        "y": -506
                     }, {
                         "name": "Tournai",
+                        "status": "Idle",
+                        "tag": 2,
                         "x": 427,
                         "y": -556
                     }, {
                         "name": "Mons",
+                        "status": "Idle",
+                        "tag": 3,
                         "x": 506,
                         "y": -556
                     }, {
                         "name": "Namur",
+                        "status": "Idle",
+                        "tag": 4,
                         "x": 645,
                         "y": -556
                     }, {
                         "name": "Charleroi",
+                        "status": "Idle",
                         "x": 573,
                         "y": -556
                     }, {
                         "name": "Arlon",
+                        "status": "Idle",
                         "x": 775,
                         "y": -556
-                    }]
-                }
-            ]
+                    }],
+
+                }]
+
+        }
+
+            //添加额外的正方形
+            /*, function (chart) { // on complete
+                chart.renderer.rect(700, 218, 100, 100, 5)
+                    .attr({
+                        'stroke-width': 2,
+                        stroke: 'red',
+                        fill: 'yellow'
+                    })
+                    .add();
+            }*/
+        );
+        Highcharts.setOptions({
+            global: {
+                useUTC: false
+            }
         });
-Highcharts.setOptions({
-    global: {
-        useUTC: false
-    }
-});
-function activeLastPointToolip(chart) {
-    var points = chart.series[0].points;
-    chart.tooltip.refresh(points[points.length -1]);
-}
-$('#container2').highcharts({
-    chart: {
-        type: 'spline',
-        animation: Highcharts.svg, // don't animate in old IE
-        marginRight: 10,
-        events: {
-            load: function () {
-                // set up the updating of the chart each second
-                var series = this.series[0],
-                    chart = this;
-                setInterval(function () {
-                    var x = (new Date()).getTime(), // current time
-                        y = Math.random();
-                    series.addPoint([x, y], true, true);
-                    activeLastPointToolip(chart)
-                }, 1000);
-            }
-        }
-    },
-    title: {
-        text: '动态模拟实时数据'
-    },
-    xAxis: {
-        type: 'datetime',
-        tickPixelInterval: 150
-    },
-    yAxis: {
-        title: {
-            text: '值'
-        },
-        plotLines: [{
-            value: 0,
-            width: 1,
-            color: '#808080'
-        }]
-    },
-    tooltip: {
-        formatter: function () {
-            return '<b>' + this.series.name + '</b><br/>' +
-                Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
-                Highcharts.numberFormat(this.y, 2);
-        }
-    },
-    legend: {
-        enabled: false
-    },
-    exporting: {
-        enabled: false
-    },
-    series: [{
-        name: '随机数据',
-        data: (function () {
-            // generate an array of random data
-            var data = [],
-                time = (new Date()).getTime(),
-                i;
-            for (i = -19; i <= 0; i += 1) {
-                data.push({
-                    x: time + i * 1000,
-                    y: Math.random()
-                });
-            }
-            return data;
-        }())
-    }]
-}, function(c) {
-    activeLastPointToolip(c)
-});
+
+
+
+
 
     });
 

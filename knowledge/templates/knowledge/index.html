@@ -4,10 +4,12 @@
     <div class="row">
       <input type="text">
       <button type="button">搜索</button>
+      
+      &emsp;
+      <a href="{% url 'add_knowledge' %}"><i class="ti-plus"></i> </a>
     </div>
-     <br>
     <div class="row">
-      <div class="col-md-7 col-sm-6">
+      <div class="col-md-5 col-sm-6">
         {% load static %}
         <!--a href="#">{{title}}</a-->
         {% for a in all_sugars %}
@@ -16,13 +18,13 @@
         </div>
         {% endfor %}
       </div>
-      <div class="col-md-5 col-sm-6">
+      <div class="col-md-7 col-sm-6">
         <div class="panel panel-success">
           <div class="panel-heading">
-            <h3 class="panel-title"></h3>
+            <h3 class="panel-title" id="result-title"></h3>
           </div>
           <div class="panel-body">
-            <span id="result"></span>
+            <span id="result_getdetail_knowledge"></span>
           </div>
         </div>
         
@@ -43,12 +45,13 @@
       data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
     });
     $(".sugar").click(function () {
+      $('#result-title').text(this.text);
       $.post("{% url 'getdetail' %}",
         {
           'sugar_id': $(this).attr("sugarid"),
         },
         function (ret) {
-          $('#result').html(ret)
+          $('#result_getdetail_knowledge').html(ret)
         });
       /* $.ajax({
                 type: "POST",
@@ -68,14 +71,7 @@
            });*/
     });
 
-    $("#sum").click(function () {
-      var a = $("#a").val();
-      var b = $("#b").val();
-      alert('df');
-      $.post("{% url 'add' %}", { 'a': a, 'b': b }, function (ret) {
-        $('#result').html(ret)
-      })
-    });
+
   });
 
 </script>

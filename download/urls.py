@@ -18,5 +18,5 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
-    url(r'^$', views.download,name='download'),
+    url(r'^(?P<download_id>[0-9]+)/$', views.download,name='download'),
 ]

@@ -1,0 +1,48 @@
+{% extends 'public/base.html' %} {% block content %}
+<div id="gtco-features">
+  <div class="gtco-container">
+   
+    <button id='login2'>
+	普通按钮
+</button>
+
+ <button id='normalbutton2'>
+	普通按钮
+</button>
+
+  </div>
+</div>
+{% endblock %} 
+{% block script %}
+<script>
+  $(document).ready(function () {
+    $.ajaxSetup({
+      data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+    });
+    $("#login").click(function () {
+      $.post("{% url 'login' %}",
+        {
+
+        },
+        function (ret) {
+          $('#result').html(ret);
+
+        });
+      //$("#realbutton").click();
+    });
+
+    $("#register").click(function () {
+      $.post("{% url 'register' %}",
+        {
+
+        },
+        function (ret) {
+          $('#result').html(ret);
+
+        });
+      //$("#realbutton").click();
+    });
+  });
+
+</script>
+{% endblock %}

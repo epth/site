@@ -19,6 +19,6 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.index,name='knowledge'),
-    url(r'add/', views.add,name='add'),
     url(r'getdetail/', views.getdetail,name='getdetail'),
+    url(r'add/$', views.add,name='add_knowledge'),
 ]

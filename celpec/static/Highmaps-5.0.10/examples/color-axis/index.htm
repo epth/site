@@ -4,16 +4,16 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<title>Highmaps Example</title>
 
-		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+		<script type="text/javascript" src="https://cdn.hcharts.cn/jquery/jquery-1.8.3.min.js"></script>
 		<style type="text/css">
 ${demo.css}
 		</style>
 	</head>
 	<body>
-<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-<script src="https://code.highcharts.com/maps/highmaps.js"></script>
-<script src="https://code.highcharts.com/maps/modules/data.js"></script>
-<script src="https://code.highcharts.com/mapdata/countries/us/us-all.js"></script>
+
+<script src="https://cdn.hcharts.cn/highmaps/5.0.10/highmaps.js"></script>
+<script src="https://cdn.hcharts.cn/highmaps/5.0.10/modules/data.js"></script>
+<script src="https://img.hcharts.cn/mapdata/countries/us/us-all.js"></script>
 
 
 <div id="container" style="height: 500px; min-width: 310px; max-width: 600px; margin: 0 auto"></div>
@@ -23,7 +23,7 @@ ${demo.css}
 		<script type="text/javascript">
 
 
-$.getJSON('https://www.highcharts.com/samples/data/jsonp.php?filename=us-population-density.json&callback=?', function (data) {
+$.getJSON('https://data.jianshukeji.com/jsonp?filename=json/us-population-density.json&callback=?', function (data) {
 
     // Make codes uppercase to match the map data
     $.each(data, function () {
