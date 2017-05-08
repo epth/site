@@ -2,9 +2,8 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
-from .models import USER,POINT,ESSUE
+from .models import POINT,ESSUE
 
 # Register your models here.
-admin.site.register(USER)
 admin.site.register(POINT)
 admin.site.register(ESSUE)

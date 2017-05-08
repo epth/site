@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     'users',
+    'channels',
+    'channels_test',
 ]
 
 MIDDLEWARE = [
@@ -211,4 +213,17 @@ CKEDITOR_CONFIGS = {
                 'elementspath'
             ]),
     }
+}
+
+# CHANNELS SETTINGS
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'asgiref.inmemory.ChannelLayer',
+        #'ROUTING': [],
+        'ROUTING': "channels_test.routing.channel_routing",
+    },
+    'fake_channel': {
+        'BACKEND': 'tests.test_management.FakeChannelLayer',
+        'ROUTING': [],
+    },
 }

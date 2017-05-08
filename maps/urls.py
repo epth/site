@@ -20,4 +20,5 @@ from . import views
 urlpatterns = [
     url(r'^$', views.index,name='maps'),
     url(r'^points/', views.points,name='points'),
+    url(r'^task/', views.task,name='task_maps'),
 ]

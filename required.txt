@@ -1,0 +1,2 @@
+sudo pip install -U asgiref
+sudo pip install -U daphne
